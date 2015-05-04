@@ -1,0 +1,25 @@
+<block>
+  <name>Clock recovery zc ff</name>
+  <key>rfid_clock_recovery_zc_ff</key>
+  <category>RFID</category>
+  <import>import rfid</import>
+  <make>rfid.clock_recovery_zc_ff($samples_per_pulse, $interp_factor)</make>
+  <param>
+    <name>Samples_per_pulse</name>
+    <key>samples_per_pulse</key>
+    <type>int</type>
+  </param>
+  <param>
+    <name>Interp_factor</name>
+    <key>interp_factor</key>
+    <type>int</type>
+  </param>
+  <sink>
+    <name>in</name>
+    <type>float</type>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>float</type>
+  </source>
+</block>

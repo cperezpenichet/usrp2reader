@@ -5,7 +5,11 @@
 #      comment out the 40 kHz settings.
 
 from gnuradio import gr, gru
-from gnuradio import usrp
+from gnuradio.blocks import file_sink, complex_to_mag, float_to_complex, multiply_const_ff
+from gnuradio.filter import fir_filter_ccc
+from gnuradio.analog import agc2_cc, agc2_ff
+from gnuradio.digital import clock_recovery_mm_ff
+from gnuradio import uhd as usrp
 from gnuradio import eng_notation
 from gnuradio.eng_option import eng_option
 from string import split
@@ -25,10 +29,10 @@ class my_top_block(gr.top_block):
            
         amplitude = 30000
 
-        filt_out = gr.file_sink(gr.sizeof_gr_complex, "./filt.out")
-        filt2_out = gr.file_sink(gr.sizeof_gr_complex, "./filt2.out")
-        ffilt_out = gr.file_sink(gr.sizeof_float, "./ffilt.out")
-        ffilt2_out = gr.file_sink(gr.sizeof_float, "./ffilt2.out")
+        filt_out = file_sink(gr.sizeof_gr_complex, "./filt.out")
+        filt2_out = file_sink(gr.sizeof_gr_complex, "./filt2.out")
+        ffilt_out = file_sink(gr.sizeof_float, "./ffilt.out")
+        ffilt2_out = file_sink(gr.sizeof_float, "./ffilt2.out")
 
         interp_rate = 128
         dec_rate = 8
@@ -37,11 +41,11 @@ class my_top_block(gr.top_block):
         num_taps = int(64000 / ( (dec_rate * 4) * 256 )) #Filter matched to 1/4 of the 256 kHz tag cycle
         taps = [complex(1,1)] * num_taps
         
-        matched_filt = gr.fir_filter_ccc(sw_dec, taps);  
+        matched_filt = fir_filter_ccc(sw_dec, taps);  
           
-        agc = gr.agc2_cc(0.3, 1e-3, 1, 1, 100) 
+        agc = agc2_cc(0.3, 1e-3, 1, 1) 
      
-        to_mag = gr.complex_to_mag()
+        to_mag = complex_to_mag()
 
         center = rfid.center_ff(4)
 
@@ -51,7 +55,7 @@ class my_top_block(gr.top_block):
         gain_omega = .25 * gain_mu * gain_mu
         omega_relative_limit = .05
 
-        mm = gr.clock_recovery_mm_ff(omega, gain_omega, mu, gain_mu, omega_relative_limit)
+        mm = clock_recovery_mm_ff(omega, gain_omega, mu, gain_mu, omega_relative_limit)
 
 
         self.reader = rfid.reader_f(int(128e6/interp_rate)); 
@@ -63,11 +67,11 @@ class my_top_block(gr.top_block):
 
        
        
-        to_complex = gr.float_to_complex()
-        amp = gr.multiply_const_ff(amplitude)
+        to_complex = float_to_complex()
+        amp = multiply_const_ff(amplitude)
         
-        f_sink = gr.file_sink(gr.sizeof_gr_complex, 'f_sink.out');
-        f_sink2 = gr.file_sink(gr.sizeof_gr_complex, 'f_sink2.out');
+        f_sink = file_sink(gr.sizeof_gr_complex, 'f_sink.out');
+        f_sink2 = file_sink(gr.sizeof_gr_complex, 'f_sink2.out');
 
 
             #TX
@@ -76,39 +80,71 @@ class my_top_block(gr.top_block):
 
         freq = 915e6
         rx_gain = 20  
+
+	tx = usrp.usrp_sink(
+			device_addr="",
+			io_type=usrp.io_type.COMPLEX_FLOAT32,
+			num_channels=1,
+			)
+	print "tx: get sample rate:"
+	print (tx.get_samp_rate())
+	tx.set_samp_rate(128e6/interp_rate)
+	print "tx: get sample rate:"
+	print (tx.get_samp_rate())
+	
+	r = tx.set_center_freq(freq, 0)
     
-        tx = usrp.sink_c(fusb_block_size = 1024, fusb_nblocks=8)
-        tx.set_interp_rate(interp_rate)
-        tx_subdev = (0,0)
-        tx.set_mux(usrp.determine_tx_mux_value(tx, tx_subdev))
-        subdev = usrp.selected_subdev(tx, tx_subdev)
-        subdev.set_enable(True)
-        subdev.set_gain(subdev.gain_range()[2])
-        t = tx.tune(subdev.which(), subdev, freq)
-        if not t:
-            print "Couldn't set tx freq"
+        #tx = usrp.usrp_sink(fusb_block_size = 1024, fusb_nblocks=8)
+        #tx.set_interp_rate(interp_rate)
+        #tx_subdev = (0,0)
+        #tx.set_mux(usrp.determine_tx_mux_value(tx, tx_subdev))
+        #subdev = usrp.selected_subdev(tx, tx_subdev)
+        #subdev.set_enable(True)
+        #subdev.set_gain(subdev.gain_range()[2])
+        #t = tx.tune(subdev.which(), subdev, freq)
+        #if not t:
+        #    print "Couldn't set tx freq"
 #End TX
              
 #RX
-        rx = usrp.source_c(0, dec_rate, fusb_block_size = 512 * 4, fusb_nblocks = 16)
-        rx_subdev_spec = (1,0)
-        rx.set_mux(usrp.determine_rx_mux_value(rx, rx_subdev_spec))
-        rx_subdev = usrp.selected_subdev(rx, rx_subdev_spec)
-        rx_subdev.set_gain(rx_gain)
-        rx_subdev.set_auto_tr(False)
-        rx_subdev.set_enable(True)
-        
-        r = usrp.tune(rx, 0, rx_subdev, freq)
+        #rx = usrp.usrp_source(0, dec_rate, fusb_block_size = 512 * 4, fusb_nblocks = 16)
+        #rx_subdev_spec = (1,0)
+        #rx.set_mux(usrp.determine_rx_mux_value(rx, rx_subdev_spec))
+        #rx_subdev = usrp.selected_subdev(rx, rx_subdev_spec)
+        #rx_subdev.set_gain(rx_gain)
+        #rx_subdev.set_auto_tr(False)
+        #rx_subdev.set_enable(True)
+       # 
+       # r = usrp.tune(rx, 0, rx_subdev, freq)
 
-        self.rx = rx
-        if not r:
-            print "Couldn't set rx freq"
+        #self.rx = rx
+        #if not r:
+        #    print "Couldn't set rx freq"
+
+	rx = usrp.usrp_source(
+		device_addr="",
+		io_type=usrp.io_type.COMPLEX_FLOAT32,
+		num_channels=1,
+	)
+	print "rx: get samp rate"
+	print (rx.get_samp_rate())		
+	r = rx.set_samp_rate(64e6/dec_rate)
+	print "rx: get samp rate"
+	print (rx.get_samp_rate())		
+
+	r = rx.set_center_freq(freq, 0)
+	
+	print "rx: get gain "
+	print (rx.get_gain_range())		
+	r = rx.set_gain(rx_gain, 0)
+	print "rx: get gain "
+	print (rx.get_gain())	
 
 #End RX
 
         command_gate.set_ctrl_out(self.reader.ctrl_q())
         tag_decoder.set_ctrl_out(self.reader.ctrl_q())
-        agc2 = gr.agc2_ff(0.3, 1e-3, 1, 1, 100) 
+        agc2 = agc2_ff(0.3, 1e-3, 1, 1) 
 
 
 #########Build Graph

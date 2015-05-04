@@ -1,0 +1,15 @@
+<block>
+  <name>Tag decoder f</name>
+  <key>rfid_tag_decoder_f</key>
+  <category>RFID</category>
+  <import>import rfid</import>
+  <make>rfid.tag_decoder_f()</make>
+  <sink>
+    <name>in</name>
+    <type>float</type>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>float</type>
+  </source>
+</block>

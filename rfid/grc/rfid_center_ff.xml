@@ -1,0 +1,20 @@
+<block>
+  <name>Center ff</name>
+  <key>rfid_center_ff</key>
+  <category>RFID</category>
+  <import>import rfid</import>
+  <make>rfid.center_ff($samples_per_pulse)</make>
+  <param>
+    <name>Samples_per_pulse</name>
+    <key>samples_per_pulse</key>
+    <type>int</type>
+  </param>
+  <sink>
+    <name>in</name>
+    <type>float</type>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>float</type>
+  </source>
+</block>

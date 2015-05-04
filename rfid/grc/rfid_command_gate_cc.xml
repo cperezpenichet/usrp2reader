@@ -1,0 +1,30 @@
+<block>
+  <name>Command gate cc</name>
+  <key>rfid_command_gate_cc</key>
+  <category>RFID</category>
+  <import>import rfid</import>
+  <make>rfid.command_gate_cc($pw, $T1, $sample_rate)</make>
+  <param>
+    <name>Pw</name>
+    <key>pw</key>
+    <type>int</type>
+  </param>
+  <param>
+    <name>T1</name>
+    <key>T1</key>
+    <type>int</type>
+  </param>
+  <param>
+    <name>Sample_rate</name>
+    <key>sample_rate</key>
+    <type>int</type>
+  </param>
+  <sink>
+    <name>in</name>
+    <type>complex</type>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>complex</type>
+  </source>
+</block>

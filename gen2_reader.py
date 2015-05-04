@@ -7,9 +7,10 @@ from gnuradio import eng_notation
 from gnuradio import gr,gru
 from gnuradio import uhd
 from gnuradio.wxgui import scopesink2
-from gnuradio.wxgui import scopesink2
+from gnuradio.wxgui import TRIG_MODE_AUTO
 from gnuradio.eng_option import eng_option
-from gnuradio.gr import firdes
+from gnuradio.filter import firdes
+import gnuradio.filter
 from grc_gnuradio import wxgui as grc_wxgui
 from optparse import OptionParser
 from string import split
@@ -21,6 +22,8 @@ import math
 import rfid
 import wx
 from threading import Timer
+from gnuradio.analog import agc2_cc
+from gnuradio.blocks import complex_to_mag, float_to_complex, multiply_const_ff
 
 
 log_file = open("log_out.log", "a")
@@ -43,7 +46,7 @@ class top_block(grc_wxgui.top_block_gui):
 			ac_couple=False,
 			xy_mode=False,
 			num_inputs=1,
-			trig_mode=gr.gr_TRIG_MODE_AUTO,
+			trig_mode=TRIG_MODE_AUTO,
 			y_axis_label="Counts",
 		)
 		self.Add(self.wxgui_scopesink2_0.win)
@@ -62,11 +65,12 @@ class top_block(grc_wxgui.top_block_gui):
 
 		taps = [complex(1,1)] * num_taps
 		
-		matched_filt = gr.fir_filter_ccc(sw_dec, taps);
+		matched_filt = gnuradio.filter.fir_filter_ccc(sw_dec, taps);
 		  
-		agc = gr.agc2_cc(0.3, 1e-3, 1, 1, 100) 
+		#agc = agc2_cc(0.3, 1e-3, 1, 1, 100) 
+		agc = agc2_cc(0.3, 1e-3, 1, 1)
 	     
-		to_mag = gr.complex_to_mag()
+		to_mag = complex_to_mag()
 #		center = rfid.center_ff(10)
 		center = rfid.center_ff(4)
 
@@ -88,8 +92,8 @@ class top_block(grc_wxgui.top_block_gui):
 
 	       
 	       
-		to_complex = gr.float_to_complex()
-		amp = gr.multiply_const_ff(amplitude)
+		to_complex = float_to_complex()
+		amp = multiply_const_ff(amplitude)
 		
 		##################################################
 		# Blocks
@@ -149,8 +153,9 @@ class top_block(grc_wxgui.top_block_gui):
 		self.connect(amp, to_complex)
 		self.connect(to_complex, tx)
 
+                self.connect(to_mag, self.wxgui_scopesink2_0)
+
 	#################
-		
 
 def main():
     

@@ -11,7 +11,7 @@ const int READER_CYCLE_TIMER_RATE = 1000; //XXX ms default 500
 
 //These specify how many cycles, and how many rounds in each cycle, before the reader stops
 // Note that if CHANGE_Q is true, a cycle ends when all tags are read. 
-const int READER_NUM_CYCLES = 5;  //Number of Cycles, i.e. Power downs
+const int READER_NUM_CYCLES = 5000;  //Number of Cycles, i.e. Power downs
 const int READER_NUM_ROUNDS = 1;    //How many Queries per cycle. Only used if !CHANGE_Q. 
 ////////
 
@@ -35,7 +35,7 @@ const float INIT_QFP = 0;              //Initial Q value
 //USRP1 automatically sends the CW, at least with the current GNURadio.
 // USRP2, or if GNUradio changes, this will send out the CW manually. 
 // If a tag is near the edge of the spec, the timing of the manual CW may be off.
-const bool TRANSMIT_CW = false;  
+const bool TRANSMIT_CW = true;  
 
 enum {QUERY, ACK, QREP, NAK, REQ_RN, READ, IDLE};  //Gen 2 state machine
 enum {GATE_RESET, GATE_OPEN, GATE_CLOSED, GATE_DISABLED, GATE_FINISHED};  //State of command_gate

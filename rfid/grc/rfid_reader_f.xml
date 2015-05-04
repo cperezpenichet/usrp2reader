@@ -1,0 +1,20 @@
+<block>
+  <name>Reader f</name>
+  <key>rfid_reader_f</key>
+  <category>RFID</category>
+  <import>import rfid</import>
+  <make>rfid.reader_f($sample_rate)</make>
+  <param>
+    <name>Sample_rate</name>
+    <key>sample_rate</key>
+    <type>int</type>
+  </param>
+  <sink>
+    <name>in</name>
+    <type>float</type>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>float</type>
+  </source>
+</block>
