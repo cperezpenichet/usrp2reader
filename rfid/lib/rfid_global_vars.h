@@ -97,7 +97,7 @@ const static char * opt_q_strings[] = {"0000","0001","0001","0010","0010","0010"
 //For 40 kHz uplink
 
 const int delim_width = 12; // usec
-const int pulse_width = 12;
+const int pulse_width = 6;
 const int tari_width = 12;
 
 //const int trcal_width = 200;  //for 40 kHz
@@ -108,8 +108,10 @@ const int tari_width = 12;
 //For WISP. Remember to use M4 only
 
 
-const int rtcal_width = 60; //WISP
-const int trcal_width = 75; //WISP
+//const int rtcal_width = 60; //WISP
+const int rtcal_width = 31; //WISP 5
+//const int trcal_width = 75; //WISP
+const int trcal_width = 50; //WISP 5
 const int NUM_SAMPLES_PER_PULSE = 4;
 
 
