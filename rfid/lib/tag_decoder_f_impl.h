@@ -38,7 +38,7 @@ namespace gr {
 	  int                   d_skip_count;
 	  int                   d_samples_since_reset;
 	  int                   d_preamble_miss_threshold;
-	  int                   d_last_score;
+	  float                   d_last_score;
 	  int                   d_samples_processed;
 	 
 	  gr::msg_queue::sptr	d_ctrl_out;  //Pipe control messages to reader block.

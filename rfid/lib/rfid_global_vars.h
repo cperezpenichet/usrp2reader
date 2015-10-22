@@ -35,7 +35,7 @@ const float INIT_QFP = 0;              //Initial Q value
 //USRP1 automatically sends the CW, at least with the current GNURadio.
 // USRP2, or if GNUradio changes, this will send out the CW manually. 
 // If a tag is near the edge of the spec, the timing of the manual CW may be off.
-const bool TRANSMIT_CW = true;  
+const bool TRANSMIT_CW = false;  
 
 enum {QUERY, ACK, QREP, NAK, REQ_RN, READ, IDLE};  //Gen 2 state machine
 enum {GATE_RESET, GATE_OPEN, GATE_CLOSED, GATE_DISABLED, GATE_FINISHED};  //State of command_gate
@@ -163,21 +163,32 @@ static float m2_preamble_vec[] = {1,1,-1,-1,1,1,-1,-1,
 				  1,1,-1,-1,-1,-1,1,1,
 				  -1,-1,1,1,1,1,-1,-1};
 
+static float m0_preamble_vec[] = { 1,  1,  1,  1,
+				  -1, -1,  1,  1,
+				  -1, -1, -1, -1,
+				   1,  1, -1, -1,
+				  -1, -1, -1, -1,
+				   1,  1,  1,  1 };
 
 //static float m2_data_one_vec[] = {1,-1,-1,1};
 //static float m4_data_one_vec[] = {1,-1,1,-1,-1,1,-1,1};
 //static float m8_data_one_vec[] = {1,-1,1,-1,1,-1,1,-1,-1,1,-1,1,-1,1,-1,1};
+static float m0_data_one_vec[] = {1,1,1,1};
 static float m2_data_one_vec[] = {1,1,-1,-1,-1,-1,1,1};
 static float m4_data_one_vec[] = {1,1,-1,-1,1,1,-1,-1,-1,-1,1,1,-1,-1,1,1};
 static float m8_data_one_vec[] = {1,1,-1,-1,1,1,-1,-1,1,1,-1,-1,1,1,-1,-1,-1,-1,1,1,-1,-1,1,1,-1,-1,1,1,-1,-1,1,1};
 
 //lens in pulses (i.e., 1/2 cycle)
+const int m0_one_len = 4;
 const int m2_one_len = 8;
 const int m4_one_len = 16;
 //const int m4_one_len = 8;
 const int m8_one_len = 32;
 const int m2_preamble_len = 48; 
 const int m4_preamble_len = 96; 
+
+const int m0_preamble_len = 24; 
+
 //const int m4_preamble_len = 48; 
 const int m8_preamble_len = 192; 
 const int max_tag_response = 512;

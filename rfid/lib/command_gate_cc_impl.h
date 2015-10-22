@@ -47,6 +47,7 @@ namespace gr {
 	  
 	 
 	  float static const AVG_WIN = 1500; // Window to average amplitude over, in us
+	  //float static const AVG_WIN = 250; // Window to average amplitude over, in us
 	  float static const THRESH_FRACTION = 0.75; //Percent of avg amplitude to detect edges
 	  double static const MIN_AMP_THRESH = 0;     //Eventually, expose as user parameter
 	  float * d_window_samples;   //Array to hold samples for averaging amplitude

@@ -264,6 +264,7 @@ command_gate_cc_impl::is_negative_edge(float sample){
       else{
 	out[written++] = in[i];
 	if(d_sample_count++ > global_reader_state->num_samples_to_ungate){
+		//printf("close. %d samples\n", global_reader_state->num_samples_to_ungate);
 	 
 	  global_reader_state->command_gate_status = GATE_RESET;
 	  

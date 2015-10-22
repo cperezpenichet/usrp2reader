@@ -119,6 +119,7 @@ namespace gr {
 
       if(score < d_last_score && d_last_score > 0){
 	global_reader_state->decoder_status = DECODER_PREAMBLE_FOUND;
+	//printf("FOUND! look for %d bits\n", global_reader_state->num_bits_to_decode);
 	d_skip_count = global_reader_state->tag_preamble_cor_vec_len - 1;
 	set_history(global_reader_state->tag_one_cor_vec_len);
 	d_last_score = 0;
@@ -131,7 +132,8 @@ namespace gr {
       }
 
       if(score > 0.9 && total_pwr>0.5*global_reader_state->tag_preamble_cor_vec_len){
-        printf("score %f\t total_pwr %f\n",score, total_pwr);
+        printf("Score %f\t total_pwr %f\t last %f\n",score, total_pwr, d_last_score);
+        //printf("UPDATE\n");
 	d_last_score = score;
 	d_preamble_offset++;
       }
@@ -167,6 +169,7 @@ namespace gr {
 	
       }
       score = fabs(sum) / total_pwr;    
+      //printf("score: %f\n", score);
       
 
       if(score > 0.6){

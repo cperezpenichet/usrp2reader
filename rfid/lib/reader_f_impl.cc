@@ -114,9 +114,11 @@ namespace gr {
 	   memcpy(d_CMD, CMD, 5);
 	   char DR[2] = "0";
 	   memcpy(d_DR, DR, 2);
-	   char M[3] = "10";
+	   //char M[3] = "10";
+	   char M[3] = "00"; // for WISP5
 	   memcpy(d_M, M, 3);
 	   char tr_ext[2] = "1";
+	   //char tr_ext[2] = "0"; // for WISP5
 	   memcpy(d_tr_ext, tr_ext, 2);
 	   char sel[3] = "00";
 	   memcpy(d_sel, sel, 3);
@@ -971,12 +973,12 @@ reader_f_impl::send_read(){
    }
 
   
-   //if(strcmp(global_reader_state->M, "00") == 0){
-   // global_reader_state->tag_preamble_cor_vec = fm0_preamble;
-   // global_reader_state->tag_preamble_cor_vec_len = len_fm0_preamble;
-   // global_reader_state->tag_one_cor_vec = fm0_one_vec;
-   // global_reader_state->tag_one_cor_vec_len = len_fm0_one;
-   //}
+   if(strcmp(d_M, "00") == 0){
+    global_reader_state->tag_preamble_cor_vec = m0_preamble_vec;
+    global_reader_state->tag_preamble_cor_vec_len = m0_preamble_len;
+    global_reader_state->tag_one_cor_vec = m0_data_one_vec;
+    global_reader_state->tag_one_cor_vec_len = m0_one_len;
+   }
    if(strcmp(d_M, "11") == 0){
      global_reader_state->tag_preamble_cor_vec = m8_preamble_vec;
      global_reader_state->tag_preamble_cor_vec_len = m8_preamble_len;
